@@ -1,0 +1,5 @@
+{
+	"name": "ext.ux",
+	"description": "ExtJs 4 ux vendor",
+	"fetch_uri": "git://github.com/sencha/ext.ux/vendor.git??"
+}
