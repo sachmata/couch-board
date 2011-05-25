@@ -5,8 +5,7 @@ Ext.define('FV.controller.Orders', {
     models: ['Order'],
     views: ['order.Add'],
 
-    refs: [
-        {
+    refs: [{
         ref: 'orderList',
         selector: 'orderlist'},
     {
@@ -32,7 +31,7 @@ Ext.define('FV.controller.Orders', {
         selector: 'orderwindow',
         autoCreate: true,
         xtype: 'orderwindow'}
-    ],
+            ],
 
     requires: ['FV.lib.OrderValidator'],
 
@@ -74,11 +73,11 @@ Ext.define('FV.controller.Orders', {
      */
     loadOrder: function (selModel, selected) {
         var //grid = this.getArticleGrid(),
-            //store = this.getArticlesStore(),
-            order = selected[0];
+        //store = this.getArticlesStore(),
+        order = selected[0];
 
         if (order) {
-            /*
+/*
             grid.enable();
             store.load({
                 params: {
@@ -131,7 +130,7 @@ Ext.define('FV.controller.Orders', {
             success: function () {
                 store.add(order);
                 store.sync();
-                
+
                 form.setLoading(false);
                 win.hide();
             },

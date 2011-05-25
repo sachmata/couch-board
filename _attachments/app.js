@@ -11,7 +11,8 @@ Ext.application({
     name: 'FV',
     controllers: [
         'Articles',
-        //'Feeds',
+        /*'Feeds',*/
         'Orders'],
+    autoCreateViewport: true,
     launch: function () {}
 });
