@@ -1,0 +1,5 @@
+{
+	"name": "sch",
+	"description": "Sch ExtJs vendor",
+	"fetch_uri": "git://github.com/sch/vendor.git"
+}

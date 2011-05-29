@@ -1,30 +1,32 @@
 Ext.define('FV.view.order.Show', {
-	extend: 'Ext.panel.Panel',
-	alias: 'widget.ordershow',
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.ordershow',
 
     requires: [
-        'FV.view.article.Grid',
-        'FV.view.article.Preview'
-    ],
+        'FV.view.order.View',
+        'FV.view.supply.Grid',
+        'FV.view.post.Grid'],
 
-	closable: false,
-	layout: {
-		type: 'vbox',
-		align: 'stretch'
-	},
+    closable: false,
+    
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
 
-	initComponent: function() {
-		Ext.apply(this, {
-			items: [{
-				xtype: 'articlegrid',
-				flex: 1
-			},{
-				xtype: 'articlepreview',
-				cls: 'articlepreview',
-				height: 300
-			}]
-		});
+    initComponent: function () {
+        Ext.apply(this, {
+            items: [{
+                xtype: 'orderview',
+                height: 100},
+            {
+                xtype: 'supplygrid',
+                height: 150},
+            {
+                xtype: 'postgrid',
+                height: 150}]
+        });
 
-		this.callParent(arguments);
-	}
+        this.callParent(arguments);
+    }
 });
