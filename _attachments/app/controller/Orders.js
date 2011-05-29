@@ -31,7 +31,7 @@ Ext.define('FV.controller.Orders', {
         selector: 'orderwindow',
         autoCreate: true,
         xtype: 'orderwindow'}
-            ],
+                    ],
 
     requires: ['FV.lib.OrderValidator'],
 
@@ -62,7 +62,9 @@ Ext.define('FV.controller.Orders', {
             scope: this,
             callback: function (records, operation, success) {
                 dataview.bindStore(store);
-                dataview.getSelectionModel().select(store.getAt(0));
+                if (store.getCount() > 1) {
+                    dataview.getSelectionModel().select(store.getAt(0));
+                }
             }
         });
     },
@@ -119,7 +121,8 @@ Ext.define('FV.controller.Orders', {
             order = this.getOrderModel().create({
                 _id: idText.getValue(),
                 description: descText.getValue(),
-                type: 'order'
+                type: 'order',
+                created_at: new Date()
             });
 
         form.setLoading({

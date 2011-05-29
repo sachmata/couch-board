@@ -3,7 +3,8 @@ Ext.Loader.setConfig({
     disableCaching: false,
     paths: {
         'FV': 'app',
-        'Ext.ux': 'vendor/ext.ux'
+        'Ext.ux': 'vendor/ext.ux',
+        'Sch': 'vendor/sch'
     }
 });
 
