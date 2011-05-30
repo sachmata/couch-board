@@ -7,6 +7,7 @@ Ext.define('FV.view.post.Grid', {
 
     requires: ['Ext.ux.PreviewPlugin', 'Ext.toolbar.Toolbar'],
     
+    title: 'History',
     border: false,
     
 	initComponent: function() {

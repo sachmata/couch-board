@@ -7,8 +7,8 @@ Ext.define('FV.view.order.View', {
     cls: 'order-view',
 
     border: false,
-    
-    layout:'fit',
+
+    layout: 'fit',
 
     initComponent: function () {
         Ext.apply(this, {
@@ -17,8 +17,7 @@ Ext.define('FV.view.order.View', {
                 fieldLabel: 'Description',
                 name: 'description',
                 border: false,
-                hideLabel: true
-                }],
+                hideLabel: true}],
 
             dockedItems: [{
                 dock: 'top',

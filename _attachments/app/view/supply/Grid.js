@@ -7,6 +7,7 @@ Ext.define('FV.view.supply.Grid', {
 
     requires: ['Ext.ux.PreviewPlugin', 'Ext.toolbar.Toolbar'],
     
+    title: 'Supplies',
     border: false,
     
 	initComponent: function() {
