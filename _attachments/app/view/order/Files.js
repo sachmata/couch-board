@@ -6,7 +6,6 @@ Ext.define('FV.view.order.Files', {
         type: 'fit'
     },
     
-    border: false,
     collapsible: true,
     animCollapse: true,
     title: 'Files',

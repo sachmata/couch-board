@@ -4,9 +4,7 @@ Ext.define('FV.view.order.View', {
 
     requires: ['Ext.toolbar.Toolbar'],
 
-    cls: 'order-view',
-
-    border: false,
+    cls: 'cb-order-view',
 
     layout: 'fit',
 
@@ -17,14 +15,7 @@ Ext.define('FV.view.order.View', {
                 fieldLabel: 'Description',
                 name: 'description',
                 border: false,
-                hideLabel: true}],
-
-            dockedItems: [{
-                dock: 'top',
-                xtype: 'toolbar',
-                items: [{
-                    text: 'Save',
-                    action: 'save'}]}]
+                hideLabel: true}]
         });
 
         this.callParent(arguments);

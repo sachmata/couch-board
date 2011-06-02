@@ -14,6 +14,6 @@ Ext.define('FV.view.Viewport', {
         xtype: 'viewer'},
     {
         region: 'west',
-        width: '25%',
-        xtype: 'orderlist'}]
+        xtype: 'orderlist',
+        width: '25%'}]
 });

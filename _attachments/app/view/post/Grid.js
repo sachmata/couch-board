@@ -1,86 +1,81 @@
 Ext.define('FV.view.post.Grid', {
-	extend: 'Ext.grid.Panel',
-	alias: 'widget.postgrid',
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.postgrid',
 
-	cls: 'post-grid',
-	disabled: true,
-
+    cls: 'post-grid',
+    //disabled: true,
+    
     requires: ['Ext.ux.PreviewPlugin', 'Ext.toolbar.Toolbar'],
-    
+
     title: 'History',
-    border: false,
-    
-	initComponent: function() {
-		Ext.apply(this, {
-		    store: 'Articles',
 
-			viewConfig: {
-				plugins: [{
-					pluginId: 'preview',
-					ptype: 'preview',
-					bodyField: 'description',
-					previewExpanded: true
-				}]
-			},
+    initComponent: function () {
+        Ext.apply(this, {
+            store: 'Articles',
 
-			columns: [{
-				text: 'Title',
-				dataIndex: 'title',
-				flex: 1,
-				renderer: this.formatTitle
-			}, {
-				text: 'Author',
-				dataIndex: 'author',
-				hidden: true,
-				width: 200
-			}, {
-				text: 'Date',
-				dataIndex: 'pubDate',
-				renderer: this.formatDate,
-				width: 200
-			}],
-			dockedItems:[{
-				xtype: 'toolbar',
-				dock: 'top',
-				items: [{
-					text: 'Open All',
-					action: 'openall'
-				}]
-			}]
-		});
+            viewConfig: {
+                plugins: [{
+                    pluginId: 'preview',
+                    ptype: 'preview',
+                    bodyField: 'description',
+                    previewExpanded: true}]
+            },
 
-		this.callParent(arguments);
-	},
+            columns: [{
+                text: 'Title',
+                dataIndex: 'title',
+                flex: 1,
+                renderer: this.formatTitle},
+            {
+                text: 'Author',
+                dataIndex: 'author',
+                hidden: true,
+                width: 200},
+            {
+                text: 'Date',
+                dataIndex: 'pubDate',
+                renderer: this.formatDate,
+                width: 200}],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [{
+                    text: 'Open All',
+                    action: 'openall'}]}]
+        });
 
-	/**
-	 * Title renderer
-	 * @private
-	 */
-	formatTitle: function(value, p, record) {
-		return Ext.String.format('<div class="topic"><b>{0}</b><span class="author">{1}</span></div>', value, record.get('author') || "Unknown");
-	},
+        this.callParent(arguments);
+    },
 
-	/**
-	 * Date renderer
-	 * @private
-	 */
-	formatDate: function(date) {
-		if (!date) {
-			return '';
-		}
+    /**
+     * Title renderer
+     * @private
+     */
+    formatTitle: function (value, p, record) {
+        return Ext.String.format('<div class="topic"><b>{0}</b><span class="author">{1}</span></div>', value, record.get('author') || "Unknown");
+    },
 
-		var now = new Date(),
-			d = Ext.Date.clearTime(now, true),
-			notime = Ext.Date.clearTime(date, true).getTime();
+    /**
+     * Date renderer
+     * @private
+     */
+    formatDate: function (date) {
+        if (!date) {
+            return '';
+        }
 
-		if (notime === d.getTime()) {
-			return 'Today ' + Ext.Date.format(date, 'g:i a');
-		}
+        var now = new Date(),
+            d = Ext.Date.clearTime(now, true),
+            notime = Ext.Date.clearTime(date, true).getTime();
 
-		d = Ext.Date.add(d, 'd', -6);
-		if (d.getTime() <= notime) {
-			return Ext.Date.format(date, 'D g:i a');
-		}
-		return Ext.Date.format(date, 'Y/m/d g:i a');
-	}
+        if (notime === d.getTime()) {
+            return 'Today ' + Ext.Date.format(date, 'g:i a');
+        }
+
+        d = Ext.Date.add(d, 'd', -6);
+        if (d.getTime() <= notime) {
+            return Ext.Date.format(date, 'D g:i a');
+        }
+        return Ext.Date.format(date, 'Y/m/d g:i a');
+    }
 });

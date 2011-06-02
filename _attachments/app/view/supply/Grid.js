@@ -3,13 +3,12 @@ Ext.define('FV.view.supply.Grid', {
 	alias: 'widget.supplygrid',
 
 	cls: 'supply-grid',
-	disabled: true,
+	//disabled: true,
 
     requires: ['Ext.ux.PreviewPlugin', 'Ext.toolbar.Toolbar'],
     
     title: 'Supplies',
-    border: false,
-    
+       
 	initComponent: function() {
 		Ext.apply(this, {
 		    store: 'Articles',
