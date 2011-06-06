@@ -11,7 +11,7 @@ Ext.define('FV.view.order.View', {
     initComponent: function () {
         Ext.apply(this, {
             items: [{
-                xtype: 'textarea',
+                xtype: 'textareafield',
                 fieldLabel: 'Description',
                 name: 'description',
                 border: false,

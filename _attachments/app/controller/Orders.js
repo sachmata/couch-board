@@ -24,14 +24,16 @@ Ext.define('FV.controller.Orders', {
         ref: 'orderDescText',
         selector: 'orderwindow textareafield'},
     {
-        ref: 'articleGrid',
-        selector: 'articlegrid'},
+        ref: 'orderView',
+        selector: 'orderview'},
+    {
+        ref: 'orderViewDesc',
+        selector: 'orderview textareafield'},
     {
         ref: 'orderWindow',
         selector: 'orderwindow',
         autoCreate: true,
-        xtype: 'orderwindow'}
-                    ],
+        xtype: 'orderwindow'}],
 
     requires: ['FV.lib.OrderValidator'],
 
@@ -74,11 +76,12 @@ Ext.define('FV.controller.Orders', {
      * @param {FV.model.order} order The order to load
      */
     loadOrder: function (selModel, selected) {
-        var //grid = this.getArticleGrid(),
+        var desc = this.getOrderViewDesc(),
         //store = this.getArticlesStore(),
         order = selected[0];
 
         if (order) {
+            desc.setValue(order.get('description'));
 /*
             grid.enable();
             store.load({
