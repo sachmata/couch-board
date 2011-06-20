@@ -1,7 +1,7 @@
 Ext.define('FV.store.Orders', {
     extend: 'Ext.data.Store',
 
-    requires: ['Sch.data.proxy.Couch', 'Ext.data.reader.Json', 'Sch.data.writer.Couch'],
+    requires: ['Sch.data.proxy.Couch', 'Sch.data.reader.Couch', 'Sch.data.writer.Couch'],
 
     model: 'FV.model.Order',
 
@@ -12,7 +12,7 @@ Ext.define('FV.store.Orders', {
             read: '_view/orders'
         },
         reader: {
-            type: 'json',
+            type: 'couch',
             root: 'rows',
             record: 'value',
             totalProperty: 'total_rows'

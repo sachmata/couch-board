@@ -3,7 +3,7 @@ Ext.define('FV.controller.Orders', {
 
     stores: ['Orders'],
     models: ['Order'],
-    views: ['order.Add'],
+    views: ['order.Add', 'order.View'],
 
     refs: [{
         ref: 'orderList',
@@ -52,6 +52,9 @@ Ext.define('FV.controller.Orders', {
             },
             'orderwindow button[action=create]': {
                 click: this.createOrder
+            },
+            'ordershow button[action=save]': {
+                click: this.saveOrder
             }
         });
     },
@@ -76,9 +79,10 @@ Ext.define('FV.controller.Orders', {
      * @param {FV.model.order} order The order to load
      */
     loadOrder: function (selModel, selected) {
-        var desc = this.getOrderViewDesc(),
-        //store = this.getArticlesStore(),
-        order = selected[0];
+        this.selected = selected[0];
+
+        var order = this.selected,
+            desc = this.getOrderViewDesc();
 
         if (order) {
             desc.setValue(order.get('description'));
@@ -93,28 +97,14 @@ Ext.define('FV.controller.Orders', {
         }
     },
 
-    /**
-     * Shows the add order dialog window
-     */
     addOrder: function () {
         this.getOrderWindow().show();
     },
 
-    /**
-     * Removes the given order from the Orders store
-     * @param {FV.model.Order} order The order to remove
-     */
     removeOrder: function () {
         //this.getOrdersStore().remove(this.getOrderData().getSelectionModel().getSelection()[0]);
     },
 
-    /**
-     * @private
-     * Creates a new order in the store based on a given url. First validates that the order is well formed
-     * using FV.lib.OrderValidator.
-     * @param {String} name The name of the Order to create
-     * @param {String} url The url of the Order to create
-     */
     createOrder: function () {
         var win = this.getOrderWindow(),
             form = this.getOrderForm(),
@@ -142,8 +132,37 @@ Ext.define('FV.controller.Orders', {
             },
             failure: function () {
                 form.setLoading(false);
-                form.down('[name=order]').markInvalid('The URL specified is not a valid RSS2 order.');
+
+                Ext.Msg.alert('Invalid Order');
             }
         });
+    },
+
+    saveOrder: function () {
+        var order = this.selected,
+            desc = this.getOrderViewDesc(),
+            store = this.getOrdersStore(),
+            view = this.getOrderView();
+
+        if (order) {
+            order.set('description', desc.getValue());
+
+            view.setLoading({
+                msg: 'Validating order...'
+            });
+
+            FV.lib.OrderValidator.validate(order, {
+                success: function () {
+                    store.sync();
+
+                    view.setLoading(false);
+                },
+                failure: function () {
+                    view.setLoading(false);
+
+                    Ext.Msg.alert('Invalid Order');
+                }
+            });
+        }
     }
 });
