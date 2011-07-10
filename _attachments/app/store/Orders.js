@@ -7,19 +7,7 @@ Ext.define('FV.store.Orders', {
 
     proxy: {
         type: 'couch',
-        url: '../../',
-        api: {
-            read: '_view/orders'
-        },
-        reader: {
-            type: 'couch',
-            root: 'rows',
-            record: 'value',
-            totalProperty: 'total_rows'
-        },
-        writer: {
-            type: 'couch'
-        }
+        viewUrl: '_view/orders',
     },
 
     getNewRecords: function () {

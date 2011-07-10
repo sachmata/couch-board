@@ -1,38 +1,197 @@
-//TODO: Implement clean Couch proxy Ajax and Server are not good
 Ext.define('Sch.data.proxy.Couch', {
-    extend: 'Ext.data.proxy.Ajax',
+    extend: 'Ext.data.proxy.Proxy',
     alternateClassName: 'Sch.data.CouchProxy',
     alias: 'proxy.couch',
 
-    buildUrl: function (request) {
-        var me = this,
-            operation = request.operation,
-            records = operation.records || [],
-            record = records[0],
-            url = me.getUrl(request),
-            id = record ? record.getId() : operation.id;
+    defaultReaderType: 'couch',
+    defaultWriterType: 'couch',
 
-        if (id) {
-            if (!url.match(/\/$/)) {
-                url += '/';
-            }
+    //uses: ['Ext.data.Request'],
+    requires: ['Ext.data.Request', 'Sch.data.reader.Couch', 'Sch.data.writer.Couch'],
 
-            url += id;
-        }
+    timeout: 30000,
 
-        request.url = url;
-
-        return me.callParent(arguments);
+    actionMethods: {
+        create: 'PUT',
+        read: 'GET',
+        update: 'PUT',
+        destroy: 'DELETE'
     },
 
-    //override
+    //viewUrl: '_view/orders',
+    dbUrl: '../../',
+
+    constructor: function (config) {
+        config = config || {};
+
+        this.addEvents(
+        /**
+         * @event exception
+         * Fires when the server returns an exception
+         * @param {Ext.data.proxy.Proxy} this
+         * @param {Object} response The response from the AJAX request
+         * @param {Ext.data.Operation} operation The operation that triggered request
+         */
+        'exception');
+
+        this.callParent([config]);
+    },
+
+    create: function (operation, cb, sc) {
+        var request = this.buildRequest(operation);
+
+        if (operation.allowWrite()) {
+            request = this.getWriter().write(request);
+        }
+
+        Ext.apply(request, {
+            headers: this.headers,
+            timeout: this.timeout,
+            scope: this,
+            callback: this.createRequestCallback(request, operation, cb, sc),
+            method: this.getMethod(request),
+            disableCaching: false
+        });
+
+        Ext.Ajax.request(request);
+
+        return request;
+    },
+
+    read: function (operation, cb, sc) {
+        var isViewOp = !operation.id,
+            request = this[isViewOp ? 'buildViewRequest' : 'buildRequest'](operation);
+
+        Ext.apply(request, {
+            headers: this.headers,
+            timeout: this.timeout,
+            scope: this,
+            callback: this.createRequestCallback(request, operation, cb, sc),
+            method: this.getMethod(request),
+            disableCaching: false
+        });
+
+        Ext.Ajax.request(request);
+
+        return request;
+    },
+
+    update: function (operation, cb, sc) {
+        var request = this.buildRequest(operation);
+
+        if (operation.allowWrite()) {
+            request = this.getWriter().write(request);
+        }
+
+        Ext.apply(request, {
+            headers: this.headers,
+            timeout: this.timeout,
+            scope: this,
+            callback: this.createRequestCallback(request, operation, cb, sc),
+            method: this.getMethod(request),
+            disableCaching: false
+        });
+
+        Ext.Ajax.request(request);
+
+        return request;
+    },
+
+    destroy: function (operation, cb, sc) {
+        var request = this.buildRequest(operation);
+
+        if (operation.allowWrite()) {
+            request = this.getWriter().write(request);
+        }
+
+        Ext.apply(request, {
+            headers: this.headers,
+            timeout: this.timeout,
+            scope: this,
+            callback: this.createRequestCallback(request, operation, cb, sc),
+            method: this.getMethod(request),
+            disableCaching: false
+        });
+
+        Ext.Ajax.request(request);
+
+        return request;
+    },
+
+    buildRequest: function (operation) {
+        var request = Ext.create('Ext.data.Request', {
+            params: Ext.applyIf(operation.params || {}, {
+                id: operation.id
+            }),
+            action: operation.action,
+            operation: operation,
+            url: this.buildIdUrl(operation)
+        });
+
+        operation.request = request;
+
+        return request;
+    },
+
+    buildViewRequest: function (operation) {
+        var request = Ext.create('Ext.data.Request', {
+            params: operation.params || {},
+            action: operation.action,
+            operation: operation,
+            url: this.buildViewUrl(operation) //TODO: encode filters etc.
+        });
+
+        operation.request = request;
+
+        return request;
+    },
+
+    buildViewUrl: function (operation) {
+/*
+        if (!this.dbUrl) {
+            Ext.Error.raise("NoCouchProxyDbUrl");
+        }
+*/
+        if (!this.viewUrl) {
+            Ext.Error.raise("NoCouchProxyViewUrl");
+        }
+
+        //TODO: check for / url.match(/\/$/) /*this.dbUrl + */
+        return this.viewUrl;
+    },
+
+    buildIdUrl: function (operation) {
+        if (!this.dbUrl) {
+            Ext.Error.raise("NoCouchProxyDbUrl");
+        }
+
+        var records = operation.records || [],
+            record = records[0],
+            id = record ? record.getId() : operation.id;
+
+        if (!id) {
+            Ext.Error.raise("NoCouchProxyRecId");
+        }
+
+        //TODO: check for / url.match(/\/$/)
+        return this.dbUrl + id;
+    },
+
+    createRequestCallback: function (request, operation, callback, scope) {
+        var me = this;
+
+        return function (options, success, response) {
+            me.processResponse(success, operation, request, response, callback, scope);
+        };
+    },
+
     processResponse: function (success, operation, request, response, callback, scope) {
         var me = this,
             reader, result, records, length, mc, record, i;
 
         if (success === true) {
             reader = me.getReader();
-            result = reader.read(me.extractResponseData(response));
+            result = reader.read(response);
             records = result.records;
             length = records.length;
 
@@ -46,17 +205,11 @@ Ext.define('Sch.data.proxy.Couch', {
 
                     if (record) {
                         record.beginEdit();
-                        //ERROR
-                        //record.set(record.data);
-                        //FIX
-                        //record.set(records[i].data);
-                        //COUCH - update rev only
-                        record.set('_rev', records[i].get('_rev'));
+                        record.set(records[i].data);
                         record.endEdit(true);
                     }
                 }
 
-                //see comment in buildRequest for why we include the response object here
                 Ext.apply(operation, {
                     response: response,
                     resultSet: result
@@ -73,20 +226,52 @@ Ext.define('Sch.data.proxy.Couch', {
             me.fireEvent('exception', this, response, operation);
         }
 
-        //this callback is the one that was passed to the 'read' or 'write' function above
         if (typeof callback == 'function') {
             callback.call(scope || me, operation);
         }
 
         me.afterRequest(request, success);
-    }
-}, function () {
-    Ext.apply(this.prototype, {
-        actionMethods: {
-            create: 'PUT',
-            read: 'GET',
-            update: 'PUT',
-            destroy: 'DELETE'
+    },
+
+    setException: function (operation, response) {
+        operation.setException({
+            status: response.status,
+            statusText: response.statusText
+        });
+    },
+
+    extractResponseData: function (response) {
+        return response;
+    },
+
+    doRequest: function (operation, callback, scope) {
+        var request = this.buildRequest(operation, callback, scope);
+
+        if (operation.allowWrite()) {
+            request = this.getWriter().write(request);
         }
-    });
+
+        Ext.apply(request, {
+            headers: this.headers,
+            timeout: this.timeout,
+            scope: this,
+            callback: this.createDocRequestCallback(request, operation, callback, scope),
+            method: this.getMethod(request),
+            disableCaching: false
+        });
+
+        Ext.Ajax.request(request);
+
+        return request;
+    },
+
+    getMethod: function (request) {
+        return this.actionMethods[request.action];
+    },
+
+    afterRequest: Ext.emptyFn,
+
+    onDestroy: function () {
+        Ext.destroy(this.reader, this.writer);
+    }
 });
