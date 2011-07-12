@@ -187,7 +187,7 @@ Ext.define('Sch.data.proxy.Couch', {
 
     processResponse: function (success, operation, request, response, callback, scope) {
         var me = this,
-            reader, result, records, length, mc, record, i;
+            reader, result, records, length, mc, respRecord, operRecord, i;
 
         if (success === true) {
             reader = me.getReader();
@@ -196,23 +196,28 @@ Ext.define('Sch.data.proxy.Couch', {
             length = records.length;
 
             if (result.success !== false) {
-                mc = Ext.create('Ext.util.MixedCollection', true, function (r) {
-                    return r.getId();
-                });
-                mc.addAll(operation.records);
-                for (i = 0; i < length; i++) {
-                    record = mc.get(records[i].getId());
-
-                    if (record) {
-                        record.beginEdit();
-                        record.set(records[i].data);
-                        record.endEdit(true);
+                if (operation.records && operation.records.length > 0) { // insert, update ? delete
+                    mc = Ext.create('Ext.util.MixedCollection', true, function (r) {
+                        return r.getId();
+                    });
+                    mc.addAll(operation.records);
+                    for (i = 0; i < length; i++) {
+                        respRecord = records[i];
+                        operRecord = mc.get(respRecord.getId());
+                        if (operRecord) {
+                            operRecord.set('_rev', respRecord.get('_rev'));
+                            operRecord.commit();
+                        }
                     }
+                }
+                else { // select
+                    Ext.apply(operation, {
+                        resultSet: result
+                    });
                 }
 
                 Ext.apply(operation, {
                     response: response,
-                    resultSet: result
                 });
 
                 operation.setCompleted();

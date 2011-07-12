@@ -152,6 +152,7 @@ Ext.define('FV.controller.Orders', {
             });
 
             FV.lib.OrderValidator.validate(order, {
+                scope: this,
                 success: function () {
                     store.sync();
 

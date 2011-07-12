@@ -8,28 +8,24 @@ Ext.define('Sch.data.reader.Couch', {
     totalProperty: 'total_rows',
 
     readRecords: function (data) {
-        //single document
-        if (data._id && data._rev) {
-            //TODO: ? delete
-            // create or update
-            if (data.ok) {
-                if (data.ok === true) {
-                    data = {
-                        rows: [{
-                            value: {
-                                _id: data.id,
-                                _rev: data.rev
-                            }}]
-                    };
-                }
-            }
-            // select
-            else {
+        if (data.id && data.rev && data.ok) { // create, update ? delete
+            if (data.ok === true) {
                 data = {
                     rows: [{
-                        value: data}]
-                }
+                        value: {
+                            _id: data.id,
+                            _rev: data.rev
+                        }}]
+                };
             }
+        }
+        else if (data._id && data._rev) { // select
+            data = {
+                rows: [{
+                    value: data}]
+            }
+        }
+        else { // view select
         }
 
         return this.callParent([data]);
