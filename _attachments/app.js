@@ -11,9 +11,9 @@ Ext.Loader.setConfig({
 Ext.application({
     name: 'FV',
     controllers: [
-        'Articles',
-        /*'Feeds',*/
+        'Login',
         'Orders'],
     autoCreateViewport: true,
-    launch: function () {}
+    launch: function () {
+    }
 });

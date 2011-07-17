@@ -1,19 +1,34 @@
 Ext.define('FV.view.Viewport', {
     extend: 'Ext.container.Viewport',
+    alias: 'widget.viewport',
 
     requires: [
-        'FV.view.Viewer',
-        'FV.view.feed.List',
-        'FV.view.order.List',
-        'Ext.layout.container.Border'],
+        'FV.view.Main',
+        'FV.view.Login',
+        'Ext.layout.container.Card' /*Ext.ux.layout.Center*/ ],
 
-    layout: 'border',
+    layout: 'card',
+    /*ux.center*/
 
     items: [{
-        region: 'center',
-        xtype: 'viewer'},
+        xtype: 'login',
+        itemId: 'login'},
     {
-        region: 'west',
-        xtype: 'orderlist',
-        width: '25%'}]
+        xtype: 'main',
+        itemId: 'main'}],
+
+    initComponent: function () {
+        this.callParent(arguments);
+    },
+
+    showMain: function () {
+        this.getLayout().setActiveItem('main');
+        
+        //TODO: init main
+    },
+    showLogin: function () {
+        this.getLayout().setActiveItem('login');
+        
+        //TODO: reset login
+    }
 });

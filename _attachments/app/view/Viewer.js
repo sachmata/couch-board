@@ -6,16 +6,17 @@ Ext.define('FV.view.Viewer', {
 
     activeItem: 0,
     margins: '5 5 5 5',
-    
+
     border: false,
 
-    cls: 'cd-order-details',
-
     initComponent: function () {
-        this.items = [{
-            xtype: 'ordershow',
-            title: 'Valinor Board'}];
-
         this.callParent(arguments);
-    }
+    },
+
+    items: [{
+        xtype: 'ordershow',
+        title: 'Board'},
+    /*{
+        xtype: 'panel',
+        title: 'Reports'}*/]
 });

@@ -22,7 +22,7 @@ Ext.define('FV.view.order.Show', {
             action: 'save'}]}],
 
     items: [{
-        xtype: 'postgrid',
+        xtype: 'panel'/*'postgrid'*/,
         region: 'center',
         margins: '2 0 0 5',
         border: true},
@@ -44,7 +44,7 @@ Ext.define('FV.view.order.Show', {
             margins: '2 0 0 0',
             border: true},
         {
-            xtype: 'supplygrid',
+            xtype: 'panel'/*'supplygrid'*/,
             region: 'center',
             margins: '5 0 0 0',
             border: true}]}],

@@ -60,6 +60,7 @@ Ext.define('FV.controller.Orders', {
     },
 
     onLaunch: function () {
+        /*
         var dataview = this.getOrderData(),
             store = this.getOrdersStore();
 
@@ -72,6 +73,7 @@ Ext.define('FV.controller.Orders', {
                 }
             }
         });
+        */
     },
 
     /**
