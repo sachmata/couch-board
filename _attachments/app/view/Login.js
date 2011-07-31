@@ -3,15 +3,15 @@ Ext.define('FV.view.Login', {
     alias: 'widget.login',
     cls: 'cb-login',
 
-    //width: 350,
-    //height: 130,
     border: false,
 
     requires: [
         'Ext.form.*'],
-
+    //Ext.ux.layout.Center
+    
     layout: 'auto',
-
+    //ux.center
+    
     initComponent: function () {
         this.callParent(arguments);
     },
@@ -19,6 +19,8 @@ Ext.define('FV.view.Login', {
     items: [{
         xtype: 'form',
         title: 'Valinor Board Login',
+        width: 350,
+        margin: 30,
         bodyPadding: 5,
 
         url: '../../../_session',

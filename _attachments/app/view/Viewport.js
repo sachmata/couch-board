@@ -23,12 +23,8 @@ Ext.define('FV.view.Viewport', {
 
     showMain: function () {
         this.getLayout().setActiveItem('main');
-        
-        //TODO: init main
     },
     showLogin: function () {
         this.getLayout().setActiveItem('login');
-        
-        //TODO: reset login
     }
 });

@@ -1,8 +1,8 @@
 Ext.define('FV.controller.Login', {
     extend: 'Ext.app.Controller',
 
-    //stores: ['Orders'],
-    //models: ['Order'],
+    stores: ['Sessions'],
+    models: ['Session'],
     views: ['Login'],
 
     refs: [{
@@ -21,6 +21,9 @@ Ext.define('FV.controller.Login', {
     //requires: ['FV.lib.OrderValidator'],
     init: function () {
         this.control({
+            'login': {
+                activate: this.reset
+            },
             'login button[action=login]': {
                 click: this.login
             }
@@ -43,10 +46,17 @@ Ext.define('FV.controller.Login', {
 
             form.submit({
                 success: function (form, action) {
-                    var viewport = this.getViewport();
-                    viewport.showMain();
-                    
-                    //Ext.Msg.alert('Success', action.response.responseText);
+                    var store = this.getSessionsStore();
+                    store.load({
+                        scope: this,
+                        callback: function (records, operation, success) {
+                            var session = records[0],
+                                viewport = this.getViewport();
+                            //this.session = session;
+                            viewport.session = session;
+                            viewport.showMain();
+                        }
+                    });
                 },
                 failure: function (form, action) {
                     var rs = Ext.decode(action.response.responseText);
@@ -55,5 +65,10 @@ Ext.define('FV.controller.Login', {
                 scope: this
             });
         }
+    },
+
+    reset: function () {
+        var form = this.getLoginForm().getForm();
+        form.reset();
     }
 });

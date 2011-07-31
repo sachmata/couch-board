@@ -41,6 +41,9 @@ Ext.define('FV.controller.Orders', {
     // is executed on the Application
     init: function () {
         this.control({
+            'main': {
+                activate: this.loadOrders
+            },
             'orderlist dataview': {
                 selectionchange: this.loadOrder
             },
@@ -59,8 +62,10 @@ Ext.define('FV.controller.Orders', {
         });
     },
 
-    onLaunch: function () {
-        /*
+    onLaunch: function () {},
+
+    // loads orders to orderList
+    loadOrders: function () {
         var dataview = this.getOrderData(),
             store = this.getOrdersStore();
 
@@ -73,13 +78,9 @@ Ext.define('FV.controller.Orders', {
                 }
             }
         });
-        */
     },
 
-    /**
-     * Loads the given order into the viewer
-     * @param {FV.model.order} order The order to load
-     */
+    // loads the given order into the viewer
     loadOrder: function (selModel, selected) {
         this.selected = selected[0];
 
