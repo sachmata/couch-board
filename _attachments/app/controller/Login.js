@@ -1,8 +1,8 @@
 Ext.define('FV.controller.Login', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Sessions'],
-    models: ['Session'],
+    stores: [],
+    models: [],
     views: ['Login'],
 
     refs: [{
@@ -46,15 +46,22 @@ Ext.define('FV.controller.Login', {
 
             form.submit({
                 success: function (form, action) {
-                    var store = this.getSessionsStore();
-                    store.load({
+                    Ext.Ajax.request({
+                        url: '../../../_session',
+                        method: 'GET',
                         scope: this,
-                        callback: function (records, operation, success) {
-                            var session = records[0],
-                                viewport = this.getViewport();
-                            //this.session = session;
-                            viewport.session = session;
-                            viewport.showMain();
+                        success: function (response) {
+                            var data = Ext.decode(response.responseText);
+                            if (data.ok === true) {
+                                var session = data,
+                                    credentials = form.getValues(),
+                                    viewport = this.getViewport();
+
+                                this.session = session;
+                                this.credentials = credentials;
+
+                                viewport.showMain();
+                            }
                         }
                     });
                 },
@@ -70,5 +77,7 @@ Ext.define('FV.controller.Login', {
     reset: function () {
         var form = this.getLoginForm().getForm();
         form.reset();
-    }
+    },
+    
+    
 });
